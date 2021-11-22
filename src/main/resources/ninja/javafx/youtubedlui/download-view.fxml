@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Button?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ninja.javafx.youtubedlui.DownloadController"
+      fx:id="view"
+      prefWidth="Infinity">
+    <VBox.margin>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0"/>
+    </VBox.margin>
+    <Label fx:id="titleLabel" maxWidth="Infinity" style="-fx-font-weight: bold"/>
+    <ProgressBar fx:id="progress" maxWidth="Infinity"/>
+    <Label fx:id="infoLabel" maxWidth="Infinity"/>
+    <Button fx:id="retryButton" text="Retry" onAction="#onRetryButtonClick" maxWidth="Infinity"/>
+    <Separator orientation="HORIZONTAL"/>
+</VBox>
