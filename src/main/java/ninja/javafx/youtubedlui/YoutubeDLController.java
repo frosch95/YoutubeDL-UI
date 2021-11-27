@@ -50,6 +50,7 @@ public class YoutubeDLController implements Initializable {
             youtubeDownloadExecutor = new YoutubeDownloadExecutor(urlText.getText());
             try {
                 searching(true);
+                youtubeDownloadExecutor.loadMetaData();
                 setTitle(youtubeDownloadExecutor.getTitle());
                 successfulSearch(youtubeDownloadExecutor.getFormats());
             } catch (Exception e) {
