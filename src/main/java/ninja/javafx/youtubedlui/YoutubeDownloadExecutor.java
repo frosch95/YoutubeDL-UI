@@ -1,49 +1,36 @@
 package ninja.javafx.youtubedlui;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class YoutubeDownloadExecutor {
 
     private String executablePath = "youtube-dl.exe";
     private String url;
-    private String cachedTitle;
+
+    private JsonObject jsonResult;
 
     public YoutubeDownloadExecutor(String url) {
         this.url = url.trim();
     }
 
     public List<VideoFormat> getFormats() {
-        if (url.contains("youtube.com")) {
-            var formats = loadFormatsFromWeb();
+        if (url.contains("youtube.com") || url.contains("youtu.be")) {
+            var formats = getFormatsFromJsonResult();
             formats.add(new VideoFormat("bestvideo+bestaudio", "bestvideo+bestaudio"));
             return formats;
         } else {
-            return loadFormatsFromWeb();
+            return getFormatsFromJsonResult();
         }
     }
 
     public String getTitle() {
-        if (cachedTitle != null) return cachedTitle;
-        try {
-            var pb = new ProcessBuilder(executablePath, "-e", url);
-            pb.redirectErrorStream(true);
-            var process = pb.start();
-            var input = process.inputReader();
-            String title = input.readLine();
-            process.waitFor();
-            var exit = process.exitValue();
-            if (exit != 0) {
-                throw new RuntimeException("Cannot get title!");
-            } else {
-                cachedTitle = title;
-                return cachedTitle == null ? "" : cachedTitle;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        return jsonResult.get("title") == null ? "no title found" : jsonResult.get("title").getAsString();
     }
 
     public void download(String format, Consumer<String> messageConsumer) {
@@ -52,10 +39,7 @@ public class YoutubeDownloadExecutor {
             pb.redirectErrorStream(true);
             var process = pb.start();
             var input = process.inputReader();
-            String line;
-            while ((line = input.readLine()) != null) {
-                messageConsumer.accept(line);
-            }
+            input.lines().forEach(messageConsumer::accept);
             process.waitFor();
             var exit = process.exitValue();
             if (exit != 0) {
@@ -67,40 +51,43 @@ public class YoutubeDownloadExecutor {
         }
     }
 
-    private List<VideoFormat> loadFormatsFromWeb() {
-        var formats = new ArrayList<VideoFormat>();
+    public void loadMetaData() {
+        jsonResult = null;
         try {
-            var pb = new ProcessBuilder(executablePath, "-F", url);
+            var pb = new ProcessBuilder(executablePath, "-j", url, "--no-warnings");
             pb.redirectErrorStream(true);
             var process = pb.start();
 
             var input = process.inputReader();
-
-            boolean startFormats = false;
-            String line;
-            while ((line = input.readLine()) != null) {
-                var result = line.split("\\s+");
-
-                if (result.length > 0) {
-                    if (startFormats) {
-                        formats.add(new VideoFormat(result[0], line));
-                    } else {
-                        if (result[0].equals("format")) {
-                            startFormats = true;
-                        }
-                    }
-                }
-            }
+            var jsonResult = input.lines().map(line -> line + '\n').collect(Collectors.joining());
             process.waitFor();
             var exit = process.exitValue();
-            if (exit == 0 && !formats.isEmpty()) {
-                return formats;
+            System.out.println(jsonResult);
+            if (exit == 0) {
+                this.jsonResult = JsonParser.parseString(jsonResult).getAsJsonObject();
             } else {
-                throw new RuntimeException("no formats found");
+                throw new RuntimeException("no information found");
             }
         } catch (final Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private List<VideoFormat> getFormatsFromJsonResult() {
+        var formats = new ArrayList<VideoFormat>();
+
+        var jsonFormats = jsonResult.get("formats").getAsJsonArray();
+        if (jsonFormats == null || jsonFormats.size() == 0) {
+            throw new RuntimeException("no formats found");
+        }
+
+        for (var jsonFormat: jsonFormats) {
+            var jf = jsonFormat.getAsJsonObject();
+            var videoFormat = new VideoFormat(jf.get("format_id").getAsString(), jf.get("format").getAsString());
+            formats.add(videoFormat);
+        }
+
+        return formats;
     }
 
 }
