@@ -2,6 +2,8 @@
 
 This is just a JavaFX UI project for the youtoube-dl exe.
 
+![YoutubeDL-UI Screenshot](YoutubeDL-UI.png)
+
 ## Usage
 To use the UI download the zipped release and unzip it.
 
@@ -24,3 +26,4 @@ It is possible to change the configuration by creating a config.xml file in the 
 </properties>
 ```
 If a config value is not set, the default is used. As the example shows, yt-dlp is also supported.
+
