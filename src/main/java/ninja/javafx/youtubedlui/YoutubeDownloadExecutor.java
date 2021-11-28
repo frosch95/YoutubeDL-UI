@@ -37,7 +37,8 @@ public class YoutubeDownloadExecutor {
 
     public void download(String format, Consumer<String> messageConsumer) {
         try {
-            var pb = new ProcessBuilder(executablePath, "-f", format, url);
+            var pb = new ProcessBuilder(executablePath, "-f", format, url, "-o", config().getOutput());
+            System.out.println(pb.command().toString());
             pb.redirectErrorStream(true);
             var process = pb.start();
             var input = process.inputReader();

@@ -25,7 +25,15 @@ public class Configurations {
         return configProperties.getProperty("executable", "youtube-dl.exe");
     }
 
+    public String getOutput() {
+        return getOutputPath() + "/" + getOutputTemplate();
+    }
+
     public String getOutputPath() {
         return configProperties.getProperty("outputPath", ".");
+    }
+
+    public String getOutputTemplate() {
+        return configProperties.getProperty("outputTemplate", "%(title)s-%(id)s.%(ext)s");
     }
 }
