@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static ninja.javafx.youtubedlui.Configurations.config;
+
 public class YoutubeDownloadExecutor {
 
-    private String executablePath = "youtube-dl.exe";
+    private String executablePath = config().getExecutable();
     private String url;
 
     private JsonObject jsonResult;
