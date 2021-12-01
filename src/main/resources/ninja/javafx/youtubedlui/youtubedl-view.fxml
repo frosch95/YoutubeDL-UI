@@ -10,25 +10,30 @@
         <VBox.margin>
             <Insets bottom="25.0" left="25.0" right="25.0" top="25.0"/>
         </VBox.margin>
-        <Label text="Url:" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="NEVER"/>
-        <TextField fx:id="urlText" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS"/>
-        <Button fx:id="searchButton" text="Search" onAction="#onSearchButtonClick" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.hgrow="NEVER"/>
 
-        <Label text="Video:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <Label fx:id="titleLabel" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2"/>
-        <ProgressIndicator fx:id="progress" GridPane.columnIndex="1" GridPane.rowIndex="1" visible="false"
+        <Label text="Tool:" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="NEVER"/>
+        <ComboBox fx:id="toolChooser" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2"
+                  maxWidth="Infinity" />
+
+        <Label text="Url:" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="NEVER"/>
+        <TextField fx:id="urlText" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
+        <Button fx:id="searchButton" text="Search" onAction="#onSearchButtonClick" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.hgrow="NEVER"/>
+
+        <Label text="Video:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <Label fx:id="titleLabel" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="2"/>
+        <ProgressIndicator fx:id="progress" GridPane.columnIndex="1" GridPane.rowIndex="2" visible="false"
                            maxWidth="20" maxHeight="20" GridPane.halignment="LEFT" />
 
-        <Label text="Format:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-        <ComboBox fx:id="qualityChooser" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="2"
+        <Label text="Format:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="qualityChooser" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="2"
                   maxWidth="Infinity"/>
 
         <Button text="Download" onAction="#onDownloadButtonClick" fx:id="downloadButton" GridPane.columnIndex="0"
-                GridPane.rowIndex="3" GridPane.columnSpan="3" GridPane.fillWidth="true"
+                GridPane.rowIndex="4" GridPane.columnSpan="3" GridPane.fillWidth="true"
                 maxWidth="Infinity"/>
 
         <ScrollPane GridPane.columnIndex="0"
-                    GridPane.rowIndex="4" GridPane.columnSpan="3"
+                    GridPane.rowIndex="5" GridPane.columnSpan="3"
                     GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"
                     hbarPolicy="AS_NEEDED" vbarPolicy="ALWAYS" fitToWidth="true">
             <content>

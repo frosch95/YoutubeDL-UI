@@ -12,13 +12,14 @@ import static ninja.javafx.youtubedlui.Configurations.config;
 
 public class YoutubeDownloadExecutor {
 
-    private String executablePath = config().getExecutable();
+    private String executablePath;
     private String url;
 
     private JsonObject jsonResult;
 
-    public YoutubeDownloadExecutor(String url) {
+    public YoutubeDownloadExecutor(String url, Tool tool) {
         this.url = url.trim();
+        this.executablePath = tool.path;
     }
 
     public List<VideoFormat> getFormats() {

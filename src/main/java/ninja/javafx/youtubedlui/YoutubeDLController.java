@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static javafx.application.Platform.runLater;
+import static ninja.javafx.youtubedlui.Configurations.config;
 
 public class YoutubeDLController implements Initializable {
 
@@ -39,15 +40,16 @@ public class YoutubeDLController implements Initializable {
     @FXML
     private ProgressIndicator progress;
 
+    @FXML
+    private ComboBox<Tool> toolChooser;
+
     private YoutubeDownloadExecutor youtubeDownloadExecutor;
-
-
 
     @FXML
     protected void onSearchButtonClick() {
         clearSearch();
         new Thread(() -> {
-            youtubeDownloadExecutor = new YoutubeDownloadExecutor(urlText.getText());
+            youtubeDownloadExecutor = new YoutubeDownloadExecutor(urlText.getText(), toolChooser.getSelectionModel().getSelectedItem());
             try {
                 searching(true);
                 youtubeDownloadExecutor.loadMetaData();
@@ -78,6 +80,13 @@ public class YoutubeDLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        toolChooser.getItems().setAll(config().getExecutables());
+        toolChooser.getSelectionModel().selectFirst();
+        toolChooser.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                runLater(() -> toolChooser.getSelectionModel().selectFirst());
+            }
+        });
         searchButton.setDisable(true);
         qualityChooser.setDisable(true);
         downloadButton.setDisable(true);

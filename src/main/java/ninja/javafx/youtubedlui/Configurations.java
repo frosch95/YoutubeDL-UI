@@ -1,17 +1,28 @@
 package ninja.javafx.youtubedlui;
 
-import java.io.FileInputStream;
+import com.google.gson.Gson;
+
 import java.io.IOException;
-import java.util.Properties;
+import java.util.List;
+
+import static java.nio.file.Files.exists;
+import static java.nio.file.Files.newBufferedReader;
+import static java.nio.file.Paths.get;
+import static java.util.Arrays.asList;
 
 public class Configurations {
 
     private final static Configurations INSTANCE = new Configurations();
-    private Properties configProperties = new Properties();
+    private Configuration config;
 
     private Configurations() {
         try {
-            configProperties.loadFromXML(new FileInputStream("./config.xml"));
+            var path = get("./config.json");
+            if (exists(path)) {
+                var reader = newBufferedReader(path);
+                var gson = new Gson();
+                config = gson.fromJson(reader, Configuration.class);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -21,8 +32,8 @@ public class Configurations {
         return INSTANCE;
     }
 
-    public String getExecutable() {
-        return configProperties.getProperty("executable", "youtube-dl.exe");
+    public List<Tool> getExecutables() {
+        return null != config ? asList(config.tools) : asList(new Tool("youtube-dl", "youtube-dl.exe"));
     }
 
     public String getOutput() {
@@ -30,10 +41,10 @@ public class Configurations {
     }
 
     public String getOutputPath() {
-        return configProperties.getProperty("outputPath", ".");
+        return null != config ? config.outputPath : ".";
     }
 
     public String getOutputTemplate() {
-        return configProperties.getProperty("outputTemplate", "%(title)s-%(id)s.%(ext)s");
+        return null != config ? config.outputTemplate : "%(title)s-%(id)s.%(ext)s";
     }
 }

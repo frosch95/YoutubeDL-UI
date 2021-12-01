@@ -1,0 +1,14 @@
+{
+  "outputPath": ".",
+  "outputTemplate": "%(title)s-%(id)s.%(ext)s",
+  "tools": [
+    {
+      "name": "youtube-dl",
+      "path": "youtube-dl.exe"
+    },
+    {
+      "name": "yt-dlp",
+      "path": "yt-dlp.exe"
+    }
+  ]
+}
