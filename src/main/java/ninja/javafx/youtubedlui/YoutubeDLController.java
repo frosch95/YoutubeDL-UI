@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -90,6 +91,16 @@ public class YoutubeDLController implements Initializable {
         searchButton.setDisable(true);
         qualityChooser.setDisable(true);
         downloadButton.setDisable(true);
+        urlText.focusedProperty().addListener((observable, oldProperty, newProperty) -> runLater(() -> {
+            if (urlText.isFocused() && !urlText.getText().isEmpty()) {
+                urlText.selectAll();
+            }
+        }));
+        urlText.setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.ENTER){
+                onSearchButtonClick();
+            }
+        });
         urlText.textProperty().addListener((observable, oldValue, newValue) -> {
             clearSearch();
             try {
@@ -128,6 +139,7 @@ public class YoutubeDLController implements Initializable {
             qualityChooser.setDisable(false);
             qualityChooser.getSelectionModel().selectLast();
             downloadButton.setDisable(false);
+            downloadButton.requestFocus();
         });
     }
 }

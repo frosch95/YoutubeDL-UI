@@ -63,7 +63,12 @@ public class YoutubeDownloadExecutor {
             var process = pb.start();
 
             var input = process.inputReader();
-            var jsonResult = input.lines().map(line -> line + '\n').collect(Collectors.joining());
+            var jsonResult = input.lines()
+                    .filter(line -> {
+                        System.out.println("THE LINE "+line);
+                        return line.startsWith("{");
+                    })
+                    .map(line -> line + '\n').collect(Collectors.joining());
             process.waitFor();
             var exit = process.exitValue();
             System.out.println(jsonResult);
