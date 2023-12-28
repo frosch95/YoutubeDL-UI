@@ -38,7 +38,7 @@ public class YoutubeDownloadExecutor {
 
     public void download(String format, Consumer<String> messageConsumer) {
         try {
-            var pb = new ProcessBuilder(executablePath, "-f", format, url, "-o", config().getOutput());
+            var pb = new ProcessBuilder(executablePath, "-f", format, "--no-mtime", url, "-o", config().getOutput());
             System.out.println(pb.command().toString());
             pb.redirectErrorStream(true);
             var process = pb.start();
@@ -84,9 +84,21 @@ public class YoutubeDownloadExecutor {
 
     private List<VideoFormat> getFormatsFromJsonResult() {
         var formats = new ArrayList<VideoFormat>();
+        var formatsList = jsonResult.get("formats");
 
-        var jsonFormats = jsonResult.get("formats").getAsJsonArray();
-        if (jsonFormats == null || jsonFormats.size() == 0) {
+        var jsonFormats = formatsList == null ? null : formatsList.getAsJsonArray();
+        if (jsonFormats == null || jsonFormats.isEmpty()) {
+
+            // maybe it has only one format
+            var formatId = jsonResult.get("format_id");
+            var format = jsonResult.get("format");
+
+            if (formatId != null && format != null) {
+                var videoFormat = new VideoFormat(formatId.getAsString(), format.getAsString());
+                formats.add(videoFormat);
+                return formats;
+            }
+
             throw new RuntimeException("no formats found");
         }
 
